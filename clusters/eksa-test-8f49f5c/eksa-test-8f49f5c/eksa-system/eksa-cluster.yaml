@@ -1,0 +1,142 @@
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/managed-by-cli: "true"
+    anywhere.eks.amazonaws.com/management-components-version: v0.20.0-dev+build.407
+  name: eksa-test-8f49f5c
+  namespace: default
+spec:
+  clusterNetwork:
+    cniConfig:
+      cilium: {}
+    pods:
+      cidrBlocks:
+      - 192.169.0.0/16
+    services:
+      cidrBlocks:
+      - 10.96.0.0/12
+  controlPlaneConfiguration:
+    count: 1
+    endpoint:
+      host: 10.80.192.114
+    machineGroupRef:
+      kind: CloudStackMachineConfig
+      name: eksa-test-8f49f5c-cp
+    machineHealthCheck:
+      maxUnhealthy: 100%
+  datacenterRef:
+    kind: CloudStackDatacenterConfig
+    name: eksa-test-8f49f5c
+  eksaVersion: v0.20.0-dev+build.407
+  externalEtcdConfiguration:
+    count: 1
+    machineGroupRef:
+      kind: CloudStackMachineConfig
+      name: eksa-test-8f49f5c-etcd
+  gitOpsRef:
+    kind: FluxConfig
+    name: eksa-test
+  kubernetesVersion: "1.29"
+  machineHealthCheck:
+    maxUnhealthy: 100%
+    nodeStartupTimeout: 10m0s
+    unhealthyMachineTimeout: 5m0s
+  managementCluster:
+    name: eksa-test-8f49f5c
+  workerNodeGroupConfigurations:
+  - count: 1
+    machineGroupRef:
+      kind: CloudStackMachineConfig
+      name: eksa-test-8f49f5c
+    machineHealthCheck:
+      maxUnhealthy: 40%
+    name: md-0
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: CloudStackDatacenterConfig
+metadata:
+  name: eksa-test-8f49f5c
+  namespace: default
+spec:
+  availabilityZones:
+  - account: mpaygude-domain
+    credentialsRef: global
+    domain: mpaygude
+    managementApiEndpoint: http://10.80.89.73:8080/client/api
+    name: az-zone1
+    zone:
+      name: Zone1
+      network:
+        name: CSGuest-192
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: CloudStackMachineConfig
+metadata:
+  name: eksa-test-8f49f5c
+  namespace: default
+spec:
+  computeOffering:
+    name: Large Instance
+  template:
+    name: kubernetes-1-29-eks-14-redhat-9
+  users:
+  - name: capc
+    sshAuthorizedKeys:
+    - '"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDK+jibToB6gLL7hxgzmzsMgxXFFkTN8Yw7lEbg/VVjONEsAnbjN7793tn/CQNV7inzc8zOIRKjvE9UIhHbP8ShyBQRMD781oDMSOcE13nOgnpW9Pm1XJMaFl/o07ZxCQFXZ7Zkc2mSK2Un7EWwrLFRBHVqmXtNgC0eVNdB0yf4tr1sQM5waz1wQK/oMJI2dpjbWFoF3fhaWD2E9z+LJbe1B0YBjJFifl0hUUtAGebVi5kRmNqqEBjx2shpiEXQrniUJBrAsQdYHMs5unRknd8dzm2/dWtLWkzcIu6RUwwCYzFG8ZeHIajtzWBOYCIha+LgtUfoSaMIUww0eGL3yACPvZX7v6eHotrcvF2ss/lf2Ho9+O7fYGOTLfXfehrOYxC6lFzKwqQruOm6zgpSljF9BhjKtQXj01Obsrv0NfibsYHmGlMNjy4AReT92xTm5wjQsoIWk8u6M552QOW7sFwOsU7uh+/YqW7h7FAwZ29D+NrhntNcg1Ynf58UxHL4R9E=
+      mpaygude@bcd0746652e3"'
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: CloudStackMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/etcd: "true"
+  name: eksa-test-8f49f5c-etcd
+  namespace: default
+spec:
+  computeOffering:
+    name: Large Instance
+  template:
+    name: kubernetes-1-29-eks-14-redhat-9
+  users:
+  - name: capc
+    sshAuthorizedKeys:
+    - '"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDK+jibToB6gLL7hxgzmzsMgxXFFkTN8Yw7lEbg/VVjONEsAnbjN7793tn/CQNV7inzc8zOIRKjvE9UIhHbP8ShyBQRMD781oDMSOcE13nOgnpW9Pm1XJMaFl/o07ZxCQFXZ7Zkc2mSK2Un7EWwrLFRBHVqmXtNgC0eVNdB0yf4tr1sQM5waz1wQK/oMJI2dpjbWFoF3fhaWD2E9z+LJbe1B0YBjJFifl0hUUtAGebVi5kRmNqqEBjx2shpiEXQrniUJBrAsQdYHMs5unRknd8dzm2/dWtLWkzcIu6RUwwCYzFG8ZeHIajtzWBOYCIha+LgtUfoSaMIUww0eGL3yACPvZX7v6eHotrcvF2ss/lf2Ho9+O7fYGOTLfXfehrOYxC6lFzKwqQruOm6zgpSljF9BhjKtQXj01Obsrv0NfibsYHmGlMNjy4AReT92xTm5wjQsoIWk8u6M552QOW7sFwOsU7uh+/YqW7h7FAwZ29D+NrhntNcg1Ynf58UxHL4R9E=
+      mpaygude@bcd0746652e3"'
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: CloudStackMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/control-plane: "true"
+  name: eksa-test-8f49f5c-cp
+  namespace: default
+spec:
+  computeOffering:
+    name: Large Instance
+  template:
+    name: kubernetes-1-29-eks-14-redhat-9
+  users:
+  - name: capc
+    sshAuthorizedKeys:
+    - '"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDK+jibToB6gLL7hxgzmzsMgxXFFkTN8Yw7lEbg/VVjONEsAnbjN7793tn/CQNV7inzc8zOIRKjvE9UIhHbP8ShyBQRMD781oDMSOcE13nOgnpW9Pm1XJMaFl/o07ZxCQFXZ7Zkc2mSK2Un7EWwrLFRBHVqmXtNgC0eVNdB0yf4tr1sQM5waz1wQK/oMJI2dpjbWFoF3fhaWD2E9z+LJbe1B0YBjJFifl0hUUtAGebVi5kRmNqqEBjx2shpiEXQrniUJBrAsQdYHMs5unRknd8dzm2/dWtLWkzcIu6RUwwCYzFG8ZeHIajtzWBOYCIha+LgtUfoSaMIUww0eGL3yACPvZX7v6eHotrcvF2ss/lf2Ho9+O7fYGOTLfXfehrOYxC6lFzKwqQruOm6zgpSljF9BhjKtQXj01Obsrv0NfibsYHmGlMNjy4AReT92xTm5wjQsoIWk8u6M552QOW7sFwOsU7uh+/YqW7h7FAwZ29D+NrhntNcg1Ynf58UxHL4R9E=
+      mpaygude@bcd0746652e3"'
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: FluxConfig
+metadata:
+  name: eksa-test
+  namespace: default
+spec:
+  branch: main
+  clusterConfigPath: clusters/eksa-test-8f49f5c
+  git:
+    repositoryUrl: ssh://git@github.com/mitalipaygude/git_repo.git
+  systemNamespace: default
+
+---
